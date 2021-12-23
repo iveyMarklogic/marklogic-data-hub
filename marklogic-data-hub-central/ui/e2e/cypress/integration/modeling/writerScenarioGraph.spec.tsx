@@ -76,6 +76,7 @@ describe("Entity Modeling: Graph View", () => {
     cy.publishEntityModel();
   });
   it("Create another entity Patients and add a properties", {defaultCommandTimeout: 120000}, () => {
+    //
     modelPage.selectView("table");
     modelPage.getAddEntityButton().should("exist").click();
     entityTypeModal.newEntityName("Patients");
