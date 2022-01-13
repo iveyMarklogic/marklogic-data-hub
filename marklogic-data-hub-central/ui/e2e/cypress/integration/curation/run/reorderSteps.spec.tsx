@@ -12,8 +12,8 @@ describe("Run Tile tests", () => {
     cy.contains(Application.title);
     cy.loginAsTestUserWithRoles("hub-central-flow-writer").withRequest();
     LoginPage.postLogin();
-    cy.waitUntil(() => toolbar.getRunToolbarIcon()).click();
-    cy.waitUntil(() => runPage.getFlowName("personJSON").should("be.visible"));
+    toolbar.getRunToolbarIcon().click();
+    runPage.getFlowName("personJSON").should("be.visible");
     cy.intercept("/api/jobs/**").as("getJobs");
   });
 
