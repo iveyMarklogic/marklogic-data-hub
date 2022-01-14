@@ -23,7 +23,7 @@ type SearchContextInterface = {
   database: string,
   entityInstanceId: any,
   datasource: string,
-  baseEntities: string[]
+  baseEntities: string[],
 }
 
 const defaultSearchOptions = {
@@ -96,6 +96,8 @@ interface ISearchContextInterface {
   savedNode: any,
   setSavedNode: (node: any) => void;
   setSearchOptions: (searchOptions: SearchContextInterface) => void;
+  entitySpecificSearch: any;
+  setEntitySpecificSearch: (searchValue: string) => void;
 }
 
 export const SearchContext = React.createContext<ISearchContextInterface>({
@@ -144,6 +146,8 @@ export const SearchContext = React.createContext<ISearchContextInterface>({
   setDatasource: () => { },
   setBaseEntities: () => { },
   setSearchOptions: () => { },
+  entitySpecificSearch: undefined,
+  setEntitySpecificSearch: () => { },
 });
 
 const SearchProvider: React.FC<{children: any}> = ({children}) => {
@@ -153,6 +157,8 @@ const SearchProvider: React.FC<{children: any}> = ({children}) => {
   const [savedQueries, setSavedQueries] = useState<any>([]);
   const [savedNode, setSavedNode] = useState<any>();
   const [entityDefinitionsArray, setEntityDefinitionsArray] = useState<any>([]);
+  const [entitySpecificSearch, setEntitySpecificSearch] = useState<string>("");
+
   const {user} = useContext(UserContext);
 
   const setSearchFromUserPref = (username: string) => {
@@ -357,6 +363,7 @@ const SearchProvider: React.FC<{children: any}> = ({children}) => {
     });
     searchOptions.selectedFacets = {};
     clearAllGreyFacets();
+    setEntitySpecificSearch("");
   };
 
   /*
@@ -696,7 +703,9 @@ const SearchProvider: React.FC<{children: any}> = ({children}) => {
       setGraphViewOptions,
       setDatasource,
       setBaseEntities,
-      setSearchOptions
+      setSearchOptions,
+      entitySpecificSearch,
+      setEntitySpecificSearch,
     }}>
       {children}
     </SearchContext.Provider>
