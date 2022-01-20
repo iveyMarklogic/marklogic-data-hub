@@ -69,6 +69,7 @@ interface ISearchContextInterface {
   setAllSearchFacets: (facets: any) => void;
   greyedOptions: SearchContextInterface;
   setAllGreyedOptions: (facets: any) => void;
+  setQueryGreyedOptions: (searchString: string) => void;
   clearGreyFacet: (constraint: string, val: string) => void;
   clearConstraint: (constraint: string) => void;
   clearAllGreyFacets: () => void;
@@ -91,6 +92,7 @@ interface ISearchContextInterface {
   setBaseEntities: (baseEntities: string[]) => void;
   savedNode: any,
   setSavedNode: (node: any) => void;
+  setSearchOptions: (searchOptions: SearchContextInterface) => void;
 }
 
 export const SearchContext = React.createContext<ISearchContextInterface>({
@@ -120,6 +122,7 @@ export const SearchContext = React.createContext<ISearchContextInterface>({
   resetSearchOptions: () => { },
   setAllSearchFacets: () => { },
   setAllGreyedOptions: () => { },
+  setQueryGreyedOptions: () => { },
   clearGreyFacet: () => { },
   clearConstraint: () => { },
   clearAllGreyFacets: () => { },
@@ -136,6 +139,7 @@ export const SearchContext = React.createContext<ISearchContextInterface>({
   setGraphViewOptions: () => { },
   setDatasource: () => { },
   setBaseEntities: () => { },
+  setSearchOptions: () => { },
 });
 
 const SearchProvider: React.FC<{children: any}> = ({children}) => {
@@ -174,6 +178,12 @@ const SearchProvider: React.FC<{children: any}> = ({children}) => {
       query: searchString,
       pageNumber: 1,
       pageLength: searchOptions.pageSize
+    });
+  };
+  const setQueryGreyedOptions = (searchString: string) => {
+    setGreyedOptions({
+      ...greyedOptions,
+      query: searchString,
     });
   };
 
@@ -320,7 +330,7 @@ const SearchProvider: React.FC<{children: any}> = ({children}) => {
         delete facets[constraint];
       }
       setSearchOptions({...searchOptions, selectedFacets: facets});
-      if (Object.entries(greyedOptions.selectedFacets).length > 0 && greyedOptions.selectedFacets.hasOwnProperty(constraint)) { clearGreyFacet(constraint, val); }
+      if (Object.entries(greyedOptions.selectedFacets).length > 0 && greyedOptions.selectedFacets.hasOwnProperty(constraint)) {clearGreyFacet(constraint, val);}
     }
   };
 
@@ -328,6 +338,7 @@ const SearchProvider: React.FC<{children: any}> = ({children}) => {
   const clearAllFacets = () => {
     setSearchOptions({
       ...searchOptions,
+      query: "",
       selectedFacets: {},
       start: 1,
       pageNumber: 1,
@@ -381,12 +392,12 @@ const SearchProvider: React.FC<{children: any}> = ({children}) => {
       pageNumber: 1,
       pageLength: searchOptions.pageSize
     });
-    if (Object.entries(greyedOptions.selectedFacets).length > 0) { clearGreyRangeFacet(range); }
+    if (Object.entries(greyedOptions.selectedFacets).length > 0) {clearGreyRangeFacet(range);}
   };
 
 
   const resetSearchOptions = (tileIconClicked = false) => {
-    if (tileIconClicked) { setSearchOptions({...defaultSearchOptions, tileId: "explore", view: searchOptions.view, nextEntityType: "All Entities"}); } else { setSearchOptions({...defaultSearchOptions}); }
+    if (tileIconClicked) {setSearchOptions({...defaultSearchOptions, tileId: "explore", view: searchOptions.view, nextEntityType: "All Entities"});} else {setSearchOptions({...defaultSearchOptions});}
   };
 
 
@@ -558,21 +569,21 @@ const SearchProvider: React.FC<{children: any}> = ({children}) => {
   const setSortOrder = (propertyName: string, sortOrder: any) => {
     let sortingOrder: any = [];
     switch (sortOrder) {
-    case "ascend":
-      sortingOrder = [{
-        propertyName: propertyName,
-        sortDirection: "ascending"
-      }];
-      break;
-    case "descend":
-      sortingOrder = [{
-        propertyName: propertyName,
-        sortDirection: "descending"
-      }];
-      break;
-    default:
-      sortingOrder = [];
-      break;
+      case "ascend":
+        sortingOrder = [{
+          propertyName: propertyName,
+          sortDirection: "ascending"
+        }];
+        break;
+      case "descend":
+        sortingOrder = [{
+          propertyName: propertyName,
+          sortDirection: "descending"
+        }];
+        break;
+      default:
+        sortingOrder = [];
+        break;
     }
     setSearchOptions({
       ...searchOptions,
@@ -654,6 +665,7 @@ const SearchProvider: React.FC<{children: any}> = ({children}) => {
       resetSearchOptions,
       setAllSearchFacets,
       setAllGreyedOptions,
+      setQueryGreyedOptions,
       clearGreyFacet,
       clearConstraint,
       clearAllGreyFacets,
@@ -669,7 +681,8 @@ const SearchProvider: React.FC<{children: any}> = ({children}) => {
       setLatestDatabase,
       setGraphViewOptions,
       setDatasource,
-      setBaseEntities
+      setBaseEntities,
+      setSearchOptions
     }}>
       {children}
     </SearchContext.Provider>
