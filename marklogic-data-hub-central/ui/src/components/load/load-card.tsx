@@ -465,7 +465,7 @@ const LoadCard: React.FC<Props> = (props) => {
 
                   <div className={styles.cardNonLink} data-testid={`${elem.name}-toExistingFlow`}>
                                     Add step to an existing flow
-                    {selectVisible ? <HCTooltip id="missing-permission-tooltip" text={"Load: "+SecurityTooltips.missingPermission} placement={"bottom"}><div className={styles.cardLinkSelect}><div className={styles.cardLinkSelect}>
+                    {selectVisible ? <HCTooltip id="missing-permission-tooltip" show={!props.canWriteFlow} text={"Load: "+SecurityTooltips.missingPermission} placement={"bottom"}><div className={styles.cardLinkSelect}><div className={styles.cardLinkSelect}>
                       <Select
                         id={`${elem.name}-flowsList-select-wrapper`}
                         inputId={`${elem.name}-flowsList`}
