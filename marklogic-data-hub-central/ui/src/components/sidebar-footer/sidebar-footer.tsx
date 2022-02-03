@@ -77,7 +77,7 @@ const SidebarFooter: React.FC = () => {
           disabled={searchOptions.tileId === "explore"
             ? (Object.keys(searchOptions.selectedFacets).length === 0 && Object.keys(greyedOptions.selectedFacets).length === 0 && entitySpecificSearch === "" && greyedOptions.query === "")
             : (Object.keys(monitorOptions.selectedFacets).length === 0 && Object.keys(monitorGreyedOptions.selectedFacets).length === 0)}
-          onClick={searchOptions.tileId === "explore" ? () => clearAllFacets() : () => clearAllMonitorFacets()}>
+          onClick={searchOptions.tileId === "explore" ? () => clearFacets() : () => clearAllMonitorFacets()}>
           Clear Selection
         </HCButton>
         <HCButton

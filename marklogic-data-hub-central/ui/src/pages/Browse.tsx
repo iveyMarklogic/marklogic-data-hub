@@ -140,7 +140,7 @@ const Browse: React.FC<Props> = ({location}) => {
 
   const getGraphSearchResult = async (allEntities: any[]) => {
     let searchText = searchOptions.query;
-    let entityTypeIds = searchOptions.entityTypeIds.length ? searchOptions.entityTypeIds : allEntities;
+    let entityTypeIds = searchOptions.baseEntities && searchOptions.baseEntities.length ? searchOptions.baseEntities : allEntities;
     if (entitySpecificPanel) {
       searchText = entitySpecificSearch;
       entityTypeIds = [entitySpecificPanel.entity.name];
@@ -150,8 +150,8 @@ const Browse: React.FC<Props> = ({location}) => {
         "database": searchOptions.database,
         "data": {
           "query": {
-            "searchText": searchOptions.query,
-            "entityTypeIds": searchOptions.baseEntities && searchOptions.baseEntities.length ? searchOptions.baseEntities : allEntities,
+            "searchText": searchText,
+            "entityTypeIds": entityTypeIds,
             "selectedFacets": searchOptions.selectedFacets,
             "relatedEntityTypeIds": searchOptions.relatedEntityTypeIds
           },

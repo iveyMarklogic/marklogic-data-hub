@@ -42,16 +42,16 @@ const EntityIconsSidebar: React.FC<Props> = (props) => {
         <HCTooltip id="reference-tooltip" text="Return to the main side panel." placement="top">
           <ChevronDoubleRight aria-label="base-entity-icons-list-close" className={styles.chevronBack} onClick={closeSpecificSidebar}/>
         </HCTooltip>
-        {currentBaseEntities.map(({color, icon, name}, index) =>
+        {currentBaseEntities.map(({color, icon, name}, index) => name &&
           <div key={name} aria-label={`base-entity-icon-${name}`} style={{backgroundColor: color}} className={styles.entityIconListItem} onClick={() => handleBaseEntityClicked(index)}>
-            {icon ? <DynamicIcons name={icon}/> : <DynamicIcons name="FaShapes"/>}
+            {icon && icon ? <DynamicIcons name={icon}/> : <DynamicIcons name="FaShapes"/>}
           </div>
         )}
       </div>
       {currentRelatedEntitiesArray.length > 0 &&<div className={styles.separator}></div> }
       {currentRelatedEntitiesArray.length > 0 &&
         <div className={styles.relatedEntityIconList} aria-label="related-entity-icons-list">
-          {currentRelatedEntitiesArray.map(({color, icon, name}, index) =>
+          {currentRelatedEntitiesArray.map(({color, icon, name}, index) => name &&
             <div key={name} aria-label={`related-entity-icon-${name}`}  style={{backgroundColor: color}} className={styles.entityIconListItem} onClick={() => handleRelatedEntityClicked(index)}>
               {icon ? <DynamicIcons name={icon}/> : <DynamicIcons name="FaShapes"/>}
             </div>
