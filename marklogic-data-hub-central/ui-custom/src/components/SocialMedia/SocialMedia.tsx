@@ -1,4 +1,6 @@
-import React, {useContext} from 'react';
+import React from 'react';
+import OverlayTrigger from "react-bootstrap/OverlayTrigger";
+import Tooltip from "react-bootstrap/Tooltip";
 import "./SocialMedia.scss";
 import * as IconDictionary from 'react-bootstrap-icons';
 import {getValByConfig} from '../../util/util';
@@ -76,7 +78,7 @@ const SocialMedia: React.FC<Props> = (props) => {
   let socials = getValByConfig(props.data, social);
   socials = _.isNil(socials) ? null : (Array.isArray(socials) ? socials : [socials]);
 
-  const getIcons = () => {
+  const getItems = () => {
     if (Object.keys(sites).length === 0 || !socials || socials.length === 0) return [];
 
     const icons = socials.reduce((acc, socialItem, index) => {
@@ -90,10 +92,14 @@ const SocialMedia: React.FC<Props> = (props) => {
 
       const Icon = IconDictionary[icon];
       const link = (
-        <a key={`${title}-${index}`} target="_blank" href={urlVal ? urlVal : "#"} className="link">
-          <Icon color={color} size={size} />
-          <span className="ps-2">{handleVal}</span>
-        </a>);
+        <OverlayTrigger key={`${title}-${index}`} placement="bottom" overlay={props => (
+          <Tooltip {...props}>{urlVal ? urlVal : ""}</Tooltip>
+        )}>
+          <a target="_blank" href={urlVal ? urlVal : "#"}>
+            <Icon color={color} size={size} />
+            <span className="handle">{handleVal}</span>
+          </a>
+        </OverlayTrigger>);
       const _icons = [...acc, link];
       return _icons
     }, []);
@@ -103,9 +109,9 @@ const SocialMedia: React.FC<Props> = (props) => {
     <div className="label">
       <span className="title">{props.config.title}</span>
     </div>
-    <div data-testid="social-icons" className="social-icons">
+    <div data-testid="social-items" className="social-items">
       {
-        getIcons()
+        getItems()
       }
     </div>
   </div>) : null;
