@@ -58,6 +58,22 @@ task importPlayersViaMlcp(type: com.marklogic.gradle.task.MlcpTask) {
     mode = "local"
 }
 
-mlDeploy.finalizedBy importTeamsViaMlcp, importPlayersViaMlcp
+task importEventsViaMlcp(type: com.marklogic.gradle.task.MlcpTask) {
+    description = "Load event docs"
+    classpath = configurations.mlcp
+    command = "IMPORT"
+    port = 8099
+    host = "localhost"
+    username = "admin"
+    password = "admin"
+    output_collections = "event"
+    input_file_path = "input/terrorism/xml"
+    input_file_type = "documents"
+    output_collections = "event"
+    output_permissions = "rest-reader,read,rest-reader,update"
+    mode = "local"
+}
+
+mlDeploy.finalizedBy importTeamsViaMlcp, importPlayersViaMlcp, importEventsViaMlcp
 
 

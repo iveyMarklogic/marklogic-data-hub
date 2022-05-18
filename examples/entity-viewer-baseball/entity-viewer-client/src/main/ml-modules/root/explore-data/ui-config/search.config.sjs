@@ -23,6 +23,21 @@ const searchConfig = {
         displayShort: 3,
         displayLong: 5,
         items: [
+           {
+            type: "category",
+            name: "country_txt",
+            tooltip: "Filter by country.",
+          },
+          {
+            type: "category",
+            name: "attacktype1_txt",
+            tooltip: "Filter by country.",
+          },
+          {
+            type: "category",
+            name: "targtype1_txt",
+            tooltip: "Filter by target type.",
+          },
           {
             type: "category",
             name: "school",
@@ -191,6 +206,60 @@ const searchConfig = {
               type: "datetime",
               format: "yyyy-MM-dd",
               prefix: "Birth date: ",
+              style: {
+                fontStyle: "normal",
+              },
+            },
+          },
+            event: {
+            icon: {
+              type: "faBomb",
+              color: "#8C85DE",
+            },
+            title: {
+              id: "uri",
+              path: "extracted.event.attacktype1_txt",
+            },
+            items: [
+              {
+                component: "Address",
+                config: {
+                  arrayPath: "extracted.event",
+                  city: "city",
+                  country: "country_txt",
+                  state: "region_txt",
+                  style: {
+                    width: "350px",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                  },
+                },
+              },
+              {
+                component: "Value",
+                config: {
+                  path: "extracted.event.weaptype1_txt",
+                },
+              },
+              {
+                component: "Value",
+                config: {
+                  path: "extracted.event.weapsubtype1_txt",
+                },
+              },
+              {
+                component: "Value",
+                config: {
+                  path: "extracted.event.propextent_txt",
+                },
+              },
+            ],
+            timestamp: {
+              arrayPath: "extracted.event",
+              path: "iyear",
+              type: "datetime",
+              format: "yyyy",
+              prefix: "Occurred on: ",
               style: {
                 fontStyle: "normal",
               },

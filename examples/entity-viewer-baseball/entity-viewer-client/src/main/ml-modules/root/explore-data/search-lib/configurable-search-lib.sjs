@@ -38,7 +38,7 @@ class ConfigurableSearch extends Search {
 // userid can be accessed using input.userid
 getEntityModels(input) {
   let entityModels = {}
-  entityModels["entityTypeNames"] = ["team", "player"];
+  entityModels["entityTypeNames"] = ["team", "player", "event"];
   return entityModels;
 }
 

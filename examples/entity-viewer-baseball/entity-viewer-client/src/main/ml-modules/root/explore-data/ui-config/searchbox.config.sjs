@@ -5,7 +5,7 @@ const searchboxConfig  = {
         "items": [
             {
                 "label": "All Entities",
-                "value": ["team", "player"],
+                "value": ["team", "player", "event"],
                 "default": true
             },
             {
@@ -15,6 +15,10 @@ const searchboxConfig  = {
             {
                 "label": "Player",
                 "value": "player"
+            },
+            {
+                "label": "Event",
+                "value": "event"
             }
         ]
     }

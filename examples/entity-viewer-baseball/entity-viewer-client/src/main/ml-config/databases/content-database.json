@@ -24,6 +24,30 @@
       "namespace-uri": null,
       "range-value-positions": false,
       "scalar-type": "string"
+    },
+    {
+      "collation": "http://marklogic.com/collation/codepoint",
+      "invalid-values": "reject",
+      "localname": "attacktype1_txt",
+      "namespace-uri": null,
+      "range-value-positions": false,
+      "scalar-type": "string"
+    },
+    {
+      "collation": "http://marklogic.com/collation/codepoint",
+      "invalid-values": "reject",
+      "localname": "targtype1_txt",
+      "namespace-uri": null,
+      "range-value-positions": false,
+      "scalar-type": "string"
+    },
+    {
+      "collation": "http://marklogic.com/collation/codepoint",
+      "invalid-values": "reject",
+      "localname": "country_txt",
+      "namespace-uri": null,
+      "range-value-positions": false,
+      "scalar-type": "string"
     }
   ],
   "range-path-index": [

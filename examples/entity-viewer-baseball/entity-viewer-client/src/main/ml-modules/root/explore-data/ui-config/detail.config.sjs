@@ -99,7 +99,71 @@ const detailConfig = {
                 width: "400px",
               },
             },
+            {
+              component: "DataTableValue",
+              config: {
+                id: "capacity",
+                title: "Capacity",
+                path: "team.season-details.venue.season-details",
+                value: "capacity",
+                width: "400px",
+              },
+            },
           ],
+        },
+        relationships: {
+          component: "Relationships",
+          config: {
+            type: "text",
+            size: 30,
+            root: {
+              id: {
+                path: "uri",
+                append: ".xml",
+              },
+              label: {
+                path: "team.fullname",
+              },
+              popover: {
+                items: [
+                  {
+                    label: "Name",
+                    path: "team.fullname",
+                  },
+                  {
+                    label: "City",
+                    path: "team.location.city",
+                  },
+                  {
+                    label: "State",
+                    path: "team.location.state",
+                  },
+                ],
+              },
+            },
+            relations: {
+              arrayPath: "team.nearby.nearbyTeam",
+              id: {
+                path: "id",
+                append: ".xml",
+              },
+              predicate: {
+                path: "distance",
+              },
+              label: {
+                path: "name",
+              },
+              popover: {
+                items: [
+                  {
+                    label: "Name",
+                    path: "name",
+                  },
+                ],
+              },
+            },
+            options: {},
+          },
         },
         imageGallery: {
           component: "ImageGalleryMulti",
@@ -125,6 +189,42 @@ const detailConfig = {
               items: [],
             },
             download: true,
+          },
+        },
+        timeline: {
+          component: "Timeline",
+          config: {
+            title: "Games",
+            arrayPath: "team.games.game",
+            marker: {
+              label: {
+                path: "subject",
+              },
+              ts: {
+                path: "startdate",
+              },
+            },
+            popover: {
+              placement: "right",
+              items: [
+                {
+                  component: "DateTime",
+                  label: "Game date",
+                  config: {
+                    path: "startdate",
+                    format: "MMMM dd, yyyy",
+                  },
+                },
+                {
+                  label: "Game time",
+                  path: "starttime",
+                },
+                {
+                  label: "Location",
+                  path: "location",
+                },
+              ],
+            },
           },
         },
       },
@@ -268,7 +368,6 @@ const detailConfig = {
             },
           ],
         },
-        relationships: {},
         imageGallery: {
           component: "ImageGalleryMulti",
           config: {
@@ -294,6 +393,125 @@ const detailConfig = {
             },
             download: true,
           },
+        },
+      },
+      event: {
+        heading: {
+          id: "uri",
+          title: {
+            path: "event.attacktype1_txt",
+          },
+        },
+        info: {
+          title: "Event Info",
+          items: [
+            {
+              component: "Value",
+              config: {
+                id: "summary",
+                title: "Summary",
+                path: "event.summary",
+              },
+            },
+            {
+              component: "DataTableValue",
+              config: {
+                id: "target",
+                title: "Target",
+                path: "event",
+                value: "target1",
+                width: "400px",
+                style: {
+                  fontWeight: "normal",
+                },
+              },
+            },
+            {
+              component: "DataTableValue",
+              config: {
+                id: "type",
+                title: "Attack type",
+                path: "event",
+                value: "attacktype1_txt",
+                width: "400px",
+              },
+            },
+            {
+              component: "DataTableValue",
+              config: {
+                id: "weapon",
+                title: "Weapon",
+                path: "event",
+                value: "weapsubtype1_txt",
+                width: "400px",
+              },
+            },
+            {
+              component: "DataTableValue",
+              config: {
+                id: "corp1",
+                title: "corp1",
+                path: "event",
+                value: "corp1",
+                width: "400px",
+              },
+            },
+            {
+              component: "DataTableValue",
+              config: {
+                id: "addnotes",
+                title: "Notes",
+                path: "event",
+                value: "addnotes",
+                width: "400px",
+              },
+            },
+            {
+              component: "DataTableValue",
+              config: {
+                id: "scite1",
+                title: "Scite 1",
+                path: "event",
+                value: "scite1",
+                width: "400px",
+                style: {
+                  fontWeight: "normal",
+                  fontStyle: "italic",
+                  color: "#6e6d6d",
+                },
+              },
+            },
+            {
+              component: "DataTableValue",
+              config: {
+                id: "scite2",
+                title: "Scite 2",
+                path: "event",
+                value: "scite2",
+                width: "400px",
+                style: {
+                  fontWeight: "normal",
+                  fontStyle: "italic",
+                  color: "#6e6d6d",
+                },
+              },
+            },
+            {
+              component: "DataTableValue",
+              config: {
+                id: "scite3",
+                title: "Scite 3",
+                path: "event",
+                value: "scite3",
+                width: "400px",
+                style: {
+                  fontWeight: "normal",
+                  fontStyle: "italic",
+                  color: "#6e6d6d",
+                },
+              },
+            },
+          ],
         },
       },
     },

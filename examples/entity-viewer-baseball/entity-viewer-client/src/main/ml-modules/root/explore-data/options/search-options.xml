@@ -41,6 +41,24 @@
         <search:facet-option>descending</search:facet-option>
     </search:range>
   </search:constraint>
+   <search:constraint name="attacktype1_txt">
+    <search:range collation="http://marklogic.com/collation/codepoint" facet="true" type="xs:string">
+      <search:element name="attacktype1_txt" ns="" xmlns:es="http://marklogic.com/entity-services"/>
+      <search:facet-option>limit=25</search:facet-option>
+    </search:range>
+  </search:constraint>
+  <search:constraint name="targtype1_txt">
+    <search:range collation="http://marklogic.com/collation/codepoint" facet="true" type="xs:string">
+      <search:element name="targtype1_txt" ns="" xmlns:es="http://marklogic.com/entity-services"/>
+      <search:facet-option>limit=25</search:facet-option>
+    </search:range>
+  </search:constraint>
+  <search:constraint name="country_txt">
+    <search:range collation="http://marklogic.com/collation/codepoint" facet="true" type="xs:string">
+      <search:element name="country_txt" ns="" xmlns:es="http://marklogic.com/entity-services"/>
+      <search:facet-option>limit=25</search:facet-option>
+    </search:range>
+  </search:constraint>
   <!-- <search:constraint name="created">
     <search:range type="xs:dateTime" facet="false">
         <search:path-index xmlns:es="http://www.w3.org/2000/xmlns/">/record/createdOn</search:path-index>
@@ -81,6 +99,7 @@ Modify document extraction to change results returned
   <search:extract-document-data selected="include">
     <search:extract-path xmlns:oex="http://example.org/">//(team)</search:extract-path>
     <search:extract-path xmlns:oex="http://example.org/">//(player)</search:extract-path>
+    <search:extract-path xmlns:oex="http://example.org/">//(event)</search:extract-path>
   </search:extract-document-data>
 <!--
 To return facets, change this option to 'true' and edit constraints
