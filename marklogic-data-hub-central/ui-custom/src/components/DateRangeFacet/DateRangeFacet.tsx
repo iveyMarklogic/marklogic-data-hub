@@ -3,10 +3,11 @@ import "./DateRangeFacet.scss";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Tooltip from "react-bootstrap/Tooltip";
 import {InfoCircleFill, Calendar4, XLg} from "react-bootstrap-icons";
-import { SearchContext } from "../../store/SearchContext";
+import {SearchContext} from "../../store/SearchContext";
 import dayjs from "dayjs";
 import DateRangePicker from "react-bootstrap-daterangepicker";
 import "bootstrap-daterangepicker/daterangepicker.css";
+import DateRangePickerWrapper from "../DateRangePicker/DateRangePicker";
 
 type Props = {
   config?: any;
@@ -22,17 +23,45 @@ const DateRangeFacet: React.FC<Props> = (props) => {
   };
   const [showClear, updateShowClear] = React.useState(false);
   const [datePickerValue, setDatePickerValue] = useState<any[]>([null, null]);
+  const [datePickerRange, setDatePickerRange] = useState(null);
+
+
+  useEffect(() => {
+    if (datePickerRange && props?.config?.name && !searchContext.facetStrings.find(f => (f.split(":")[0] === (props?.config?.name)))) {
+      setDatePickerRange(null);
+    }
+  }, [searchContext.facetStrings]);
 
   useEffect(() => {
     //To display date dateRange values
-    for(let item in searchContext.facetStrings) {
-      let arr = searchContext.facetStrings[item].split(":")
+    for (let item in searchContext.facetStrings) {
+      let arr = searchContext.facetStrings[item].split(":");
       if (arr[0] === props.config.name) {
-        let dates = arr[1].split(" ~ ")
+        let dates = arr[1].split(" ~ ");
         setDatePickerValue([dates[0], dates[1]]);
       }
     }
-  },[]);
+  }, []);
+
+  function onChangeDate(dates) {
+    if (!dates) {
+      if (DateRangePicker) {
+        setDatePickerRange(null);
+        searchContext.handleFacetDateRange(props?.config?.name, "", false);
+      }
+      return;
+    }
+    const [startDate, endDate] = dates;
+    let creationDate = dayjs(startDate).format("YYYY-MM-DD") + " ~ " + dayjs(endDate).format("YYYY-MM-DD");
+
+    if (dates.length && dates[0]) {
+      searchContext.handleFacetDateRange(props?.config?.name, creationDate, true);
+      (dates[0] && dates[1]) && setDatePickerValue(dates);
+    } else {
+      searchContext.handleFacetDateRange(props?.config?.name, creationDate, false);
+    }
+    setDatePickerRange(dates);
+  }
 
   function onShow(event, picker) {
     const applyButton = document.querySelector(".applyBtn");
@@ -43,15 +72,14 @@ const DateRangeFacet: React.FC<Props> = (props) => {
   }
 
 
-  const onChange = (facet) => (startDate, endDate)  => {
+  const onChange = (facet) => (startDate, endDate) => {
     let creationDate = dayjs(startDate).format("YYYY-MM-DD") + " ~ " + dayjs(endDate).format("YYYY-MM-DD");
     const dateArray = [startDate, endDate];
 
     if (dateArray.length && dateArray[0] && startDate.isValid() && !showClear) {
       searchContext.handleFacetDateRange(facet?.name, creationDate, true);
       (dateArray[0] && dateArray[1]) && setDatePickerValue([dayjs(dateArray[0].format("YYYY-MM-DD")), dayjs(dateArray[1].format("YYYY-MM-DD"))]);
-    }
-    else {
+    } else {
       searchContext.handleFacetDateRange(facet?.name, creationDate, false);
     }
   };
@@ -90,14 +118,14 @@ const DateRangeFacet: React.FC<Props> = (props) => {
     let placeHolderDate = input.map(dateValue => dayjs(dateValue).format(dateFormat)).join(" ~ ");
     let flag;
     searchContext.facetStrings.map((facet => {
-      if(facet.split(":")[0] === facetData?.name) flag=true;
-    }))
-    if(!flag) setDatePickerValue([null,null]);
+      if (facet.split(":")[0] === facetData?.name) flag = true;
+    }));
+    if (!flag) setDatePickerValue([null, null]);
     return placeHolderDate;
   };
 
   // To Reset date range on date range picker
-  const  resetValue = (facet) => (event) => {
+  const resetValue = (facet) => (event) => {
     event.preventDefault();
     event.stopPropagation();
 
@@ -111,33 +139,38 @@ const DateRangeFacet: React.FC<Props> = (props) => {
     }
   };
 
-  return (<div><div className="title" data-testid={props.config?.name}>
-    {props.config?.name}
-    <OverlayTrigger
-        key={props.config?.name}
-        placement="right"
-        overlay={<Tooltip data-testid="createdOnTooltip">{props.config?.tooltip}</Tooltip>}
-    >
-      <InfoCircleFill
-          data-testid={"info-" + props.config?.name}
-          color="#5d6aaa"
-          size={21}
-          className="facetInfo"
-      />
-    </OverlayTrigger>
-  </div>
-    <span className="dateRangeFacet">
-      <DateRangePicker initialSettings={initialSettings} {...{onShow, ref}} onCallback={onChange(props.config)}>
-        <div onMouseOver={handleMouseOver} onMouseOut={handleMouseOut} className="pickerContainer">
-          <input type="text" readOnly className="input"
-             placeholder={formatPlaceHolder(["Start date", "End date"])}
-             value={formatValue(datePickerValue, props.config)}/>
-             {!showClear ? <Calendar4 className="calendarIcon" data-testid="calenderIcon"/> :
-             <XLg className="clearIcon" data-testid="datetime-picker-reset" onClick={resetValue(props.config)}/>}
-        </div>
-      </DateRangePicker>
-    </span>
-  </div>
+  return (
+    <div>
+      <div className="title" data-testid={props.config?.name}>
+        {props.config?.name}
+        <OverlayTrigger
+          key={props.config?.name}
+          placement="right"
+          overlay={<Tooltip data-testid="createdOnTooltip">{props.config?.tooltip}</Tooltip>}
+        >
+          <InfoCircleFill
+            data-testid={"info-" + props.config?.name}
+            color="#5d6aaa"
+            size={21}
+            className="facetInfo"
+          />
+        </OverlayTrigger>
+      </div>
+      <span className="dateRangeFacet">
+        <DateRangePicker initialSettings={initialSettings} {...{onShow, ref}} onCallback={onChange(props.config)}>
+          <div onMouseOver={handleMouseOver} onMouseOut={handleMouseOut} className="pickerContainer">
+            <input type="text" readOnly className="input"
+              placeholder={formatPlaceHolder(["Start date", "End date"])}
+              value={formatValue(datePickerValue, props.config)} />
+            {!showClear ? <Calendar4 className="calendarIcon" data-testid="calenderIcon" /> :
+              <XLg className="clearIcon" data-testid="datetime-picker-reset" onClick={resetValue(props.config)} />}
+          </div>
+        </DateRangePicker>
+      </span>
+      <div className="pt-4">
+        <DateRangePickerWrapper value={datePickerRange} locale="en" onChange={onChangeDate} calendarIcon={<Calendar4 size={12} className="calendarIcon" data-testid="calenderIcon" />} />
+      </div>
+    </div>
   );
 };
 

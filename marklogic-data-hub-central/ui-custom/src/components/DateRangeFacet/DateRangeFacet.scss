@@ -4,7 +4,7 @@
   .pickerContainer {
     background-color: white;
     position: relative;
-    max-width: 265px;
+    max-width: 275px;
     padding-left: 5px;
     &:focus-visible {
       border: none;
@@ -41,7 +41,7 @@
     font-size: 12px;
     cursor: pointer;
     pointer-events: all;
-    z-index: 10;
+    // z-index: 10;
   }
   .clearIcon {
     position: absolute;
