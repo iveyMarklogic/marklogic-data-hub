@@ -1,6 +1,7 @@
-import React, { useContext } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { UserContext } from "./store/UserContext";
+import React, {useContext} from "react";
+import {BrowserRouter as Router, Routes, Route} from "react-router-dom";
+import {} from "react-router-dom";
+import {UserContext} from "./store/UserContext";
 import MetricsProvider from "./store/MetricsContext";
 import SearchProvider from "./store/SearchContext";
 import DetailProvider from "./store/DetailContext";
@@ -9,6 +10,7 @@ import Detail from "./views/Detail";
 import Search from "./views/Search";
 import Header from "./views/Header";
 import "./App.scss";
+import ErrorBoundary from "./components/Error/Error";
 
 type Props = {};
 
@@ -22,20 +24,22 @@ const App: React.FC<Props> = (props) => {
 
   return (
     <Router>
-      <MetricsProvider>
-        <SearchProvider>
-          <DetailProvider>
-            <Header />
-            <main>
-              <Routes>
-                <Route path="/" element={<Dashboard />} />
-                <Route path="/search" element={<Search />} />
-                <Route path="/detail" element={<Detail />} />
-              </Routes>
-            </main>
-          </DetailProvider>
-        </SearchProvider>
-      </MetricsProvider>
+      <ErrorBoundary>
+        <MetricsProvider>
+          <SearchProvider>
+            <DetailProvider>
+              <Header />
+              <main>
+                <Routes>
+                  <Route path="/" element={<Dashboard />} />
+                  <Route path="/search" element={<Search />} />
+                  <Route path="/detail" element={<Detail />} />
+                </Routes>
+              </main>
+            </DetailProvider>
+          </SearchProvider>
+        </MetricsProvider>
+      </ErrorBoundary>
     </Router>
   );
 

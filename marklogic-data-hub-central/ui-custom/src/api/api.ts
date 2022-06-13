@@ -79,7 +79,7 @@ export const getUserid = async (loginAddress) => {
   }
   try {
     let response;
-    if (process.env.NODE_ENV === "development") {
+    if (process?.env?.NODE_ENV === "development") {
         // Development: URL string here needs to match what is in setupProxy.js
         response = await axios.get("/proxied", config);
     } else {

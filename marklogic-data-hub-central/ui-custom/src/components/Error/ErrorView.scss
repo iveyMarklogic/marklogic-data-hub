@@ -1,0 +1,23 @@
+.errorBoundariesContainer {
+    gap: 5px;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    .title {
+        font-size: 100px;
+    }
+
+    .errorMessageContainer {
+        .errorMessageTitle {
+          font-style: italic;
+          color: rgb(224, 84, 84);
+          font-weight: 700;
+        }
+        .errorMessageMessage {
+          font-style: italic;
+          color: rgb(224, 84, 84);
+        }
+    }
+}
