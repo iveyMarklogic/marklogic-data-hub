@@ -1,23 +1,28 @@
 .errorBoundariesContainer {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     gap: 5px;
     height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    .title {
-        font-size: 100px;
-    }
 
-    .errorMessageContainer {
-        .errorMessageTitle {
-          font-style: italic;
-          color: rgb(224, 84, 84);
+    .errorContainer {
+        .title {
+          color: #b32424;
           font-weight: 700;
         }
-        .errorMessageMessage {
-          font-style: italic;
-          color: rgb(224, 84, 84);
+        .message {
+          color: #b32424;
         }
+    }
+
+    .errorButton {
+        background-color: #394494;
+        font-size: 18px;
+        color: #fff;
+        padding: 6px 36px;
+        border-radius: 4px;
+        border-width: 0;
     }
 }
