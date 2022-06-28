@@ -168,6 +168,7 @@ const DateRangeFacet: React.FC<Props> = (props) => {
         </DateRangePicker>
       </span>
       <div className="pt-4">
+        {/* @ts-ignore */}
         <DateRangePickerWrapper value={datePickerRange} locale="en" onChange={onChangeDate} calendarIcon={<Calendar4 size={12} className="calendarIcon" data-testid="calenderIcon" />} />
       </div>
     </div>

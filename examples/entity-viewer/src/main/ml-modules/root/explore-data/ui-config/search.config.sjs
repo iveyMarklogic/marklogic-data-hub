@@ -30,11 +30,6 @@ const searchConfig  = {
                     "tooltip": "Filter by date created."
                 },
                 {
-                    "type": "dateRange",
-                    "name": "updated",
-                    "tooltip": "Filter by date updated."
-                },
-                {
                     "type": "category",
                     "name": "sources",
                     "tooltip": "Filter by source."
