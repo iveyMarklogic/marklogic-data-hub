@@ -105,6 +105,8 @@ const Browse: React.FC<Props> = ({location}) => {
   const [entitiesWithRelatedConcepts, setEntitiesWithRelatedConcepts] = useState({});
   const [viewConcepts, setViewConcepts] = useState(true);
 
+  const [graphLoading, setGraphLoading] = useState(false);
+
   const searchResultDependencies = [
     searchOptions.pageLength,
     searchOptions.start,
@@ -421,6 +423,7 @@ const Browse: React.FC<Props> = ({location}) => {
       }
       getGraphSearchResult(searchOptions.entityTypeIds);
     }
+    setGraphLoading(true);
     return () => {
       setGraphSearchData({});
     };
@@ -800,11 +803,13 @@ const Browse: React.FC<Props> = ({location}) => {
                     />
                     : viewOptions.graphView ?
                       <div>
+                        {graphLoading && <h4 className="text-center">Whe are preparing the graph...</h4>}
                         <GraphViewExplore
                           entityTypeInstances={graphSearchData}
                           graphView={viewOptions.graphView}
                           setViewConcepts={setViewConcepts}
                           setGraphPageInfo={setGraphPageInfo}
+                          setIsLoading={setGraphLoading}
                           entitiesWithRelatedConcepts={entitiesWithRelatedConcepts}
                         />
                       </div> :
