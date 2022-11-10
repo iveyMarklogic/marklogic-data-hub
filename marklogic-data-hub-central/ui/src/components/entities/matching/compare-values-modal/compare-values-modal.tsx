@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useState} from "react";
-import {Modal} from "react-bootstrap";
+import {Form, Modal} from "react-bootstrap";
 import "./compare-values-modal.scss";
 import styles from "./compare-values-modal.module.scss";
 import {Definition} from "../../../../types/modeling-types";
@@ -35,6 +35,7 @@ interface Props {
   unmergeUri: any;
   originalUri: string;
   flowName: string;
+  onChangeUri?: (uri: string[]) => void;
 }
 
 const CompareValuesModal: React.FC<Props> = (props) => {
@@ -47,6 +48,10 @@ const CompareValuesModal: React.FC<Props> = (props) => {
   const [targetUrisPopover, setTargetUrisPopover] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [showConfirmModal, toggleConfirmModal] = useState(false);
+
+  const [uriOneIndex, setUriOneIndex] = useState(0);
+  const [uriTwoIndex, setUriTwoIndex] = useState(1);
+
   const {
     searchOptions,
     toggleMergeUnmerge,
@@ -57,7 +62,8 @@ const CompareValuesModal: React.FC<Props> = (props) => {
       let parsedData = parseDefinitionsToTable(props.entityDefinitionsArray, getMatchedProperties());
       setCompareValuesTableData(parsedData);
     }
-  }, [props.isVisible]);
+  }, [props.isVisible, props.uriInfo]);
+
 
   const DEFAULT_ENTITY_DEFINITION: Definition = {
     name: "",
@@ -574,10 +580,10 @@ const CompareValuesModal: React.FC<Props> = (props) => {
         onMouseLeave={() => setShowUrisPopover(false)}>
         <Popover.Body className={styles.moreUrisPopover}>
           {props.uriCompared.length < 30 ?
-            <div className={styles.moreUrisInfo} aria-label="more-uri-info">All URIs included in this {props.isMerge? "merge" : "unmerge"} are displayed below (<strong>{props.uriCompared.length} total</strong>): <br/><br/>{props.uriCompared.map((uri, index) => { return <div key={index}><span className={styles.uriText} aria-label={`${uri}-uri`}>{uri}</span><br/></div>; })}</div>
+            <div className={styles.moreUrisInfo} aria-label="more-uri-info">All URIs included in this {props.isMerge ? "merge" : "unmerge"} are displayed below (<strong>{props.uriCompared.length} total</strong>): <br /><br />{props.uriCompared.map((uri, index) => { return <div key={index}><span className={styles.uriText} aria-label={`${uri}-uri`}>{uri}</span><br /></div>; })}</div>
             :
             <div>
-              <div className={styles.moreUrisInfo} aria-label="more-uri-info-limit">The first <strong>30</strong> URIs included in this {props.isMerge? "merge" : "unmerge"} are displayed below (<strong>{props.uriCompared.length} total</strong>): <br/><br/>{props.uriCompared.map((uri, index) => { return index < 30 ? <div><span className={styles.uriText} aria-label={`${uri}-uri`}>{uri}</span><br/></div> : null; })}</div>
+              <div className={styles.moreUrisInfo} aria-label="more-uri-info-limit">The first <strong>30</strong> URIs included in this {props.isMerge ? "merge" : "unmerge"} are displayed below (<strong>{props.uriCompared.length} total</strong>): <br /><br />{props.uriCompared.map((uri, index) => { return index < 30 ? <div><span className={styles.uriText} aria-label={`${uri}-uri`}>{uri}</span><br /></div> : null; })}</div>
               <span>...</span>
             </div>
           }
@@ -612,6 +618,39 @@ const CompareValuesModal: React.FC<Props> = (props) => {
       </Modal.Footer>
     </HCModal>
   );
+
+  // new handlers
+  const onChangeSelectUriOne = ({target}) => {
+    setUriOneIndex(+target.value);
+    if (props.onChangeUri && props.onChangeUri instanceof Function) {
+      props.onChangeUri([props.uriCompared[+target.value], props.uriCompared[uriTwoIndex]]);
+    }
+  };
+  const onChangeSelectUriTwo = ({target}) => {
+    setUriTwoIndex(+target.value);
+    if (props.onChangeUri && props.onChangeUri instanceof Function) {
+      props.onChangeUri([props.uriCompared[uriOneIndex], props.uriCompared[+target.value]]);
+    }
+  };
+
+  const SelectUriOne = () => {
+    return (
+      <Form.Select aria-label="Select uri one" onChange={onChangeSelectUriOne}>
+        {
+          props.uriCompared.map((uri, index) => <option key={index} value={index} disabled={index === uriTwoIndex} aria-label={`${uri}-uri`}>{uri}</option>)
+        }
+      </Form.Select>
+    );
+  };
+  const SelectUriTwo = () => {
+    return (
+      <Form.Select aria-label="select uri two" onChange={onChangeSelectUriTwo}>
+        {
+          props.uriCompared.map((uri, index) => <option key={index} value={index} disabled={index === uriOneIndex} aria-label={`${uri}-uri`}>{uri}</option>)
+        }
+      </Form.Select>
+    );
+  };
 
   return <><HCModal
     show={props.isVisible}
@@ -653,9 +692,15 @@ const CompareValuesModal: React.FC<Props> = (props) => {
         <div className={styles.compareTableHeader}>
           <span className={styles.expandCell}></span>
           <span className={styles.entityPropertiesHeader}></span>
-          <span className={styles.uri1}>{props.uriCompared[0]}</span>
-          <span className={styles.uri2}>{props.uriCompared[1]}</span>
-          <span className={styles.entityPreview}>{}</span>
+          <span className={styles.uri1}>
+            {props.uriCompared.length <= 2 && props.uriCompared[uriOneIndex]}
+            {props.uriCompared.length > 2 && SelectUriOne()}
+          </span>
+          <span className={styles.uri2}>
+            {props.uriCompared.length <= 2 && props.uriCompared[uriTwoIndex]}
+            {props.uriCompared.length > 2 && SelectUriTwo()}
+          </span>
+          <span className={styles.entityPreview}>{ }</span>
         </div>
         <span><img src={backgroundImage} className={styles.matchIcon}></img></span>
         <span className={styles.matchIconText}>Match</span>

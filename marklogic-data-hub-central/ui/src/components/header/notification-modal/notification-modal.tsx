@@ -230,6 +230,17 @@ const NotificationModal = (props) => {
     }
   };
 
+  const onChangeUri = async (array) => {
+    const result1 = await getDocFromURI(array[0]);
+    const result2 = await getDocFromURI(array[1]);
+    if (result1.status === 200 && result2.status === 200) {
+      let result1Instance = result1.data.data.envelope.instance;
+      let result2Instance = result2.data.data.envelope.instance;
+      await setUriInfo([{result1Instance}, {result2Instance}, uriInfo[2]]);
+    }
+  };
+
+
   const [pageTableNotification, setPageTableNotification] = useState(1);
 
   const updatePage = (p) => {
@@ -308,6 +319,7 @@ const NotificationModal = (props) => {
         isPreview={false}
         isMerge={true}
         flowName={flowName}
+        onChangeUri={onChangeUri}
         mergeUris={async (payload) => submitMergeUri(activeUri, payload)}
         unmergeUri={{}}
         fetchNotifications={fetchNotifications}
