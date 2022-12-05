@@ -36,12 +36,13 @@ import {HubCentralConfigContext} from "@util/hubCentralConfig-context";
 import {baseEntitiesSorting} from "@util/entities-sorting";
 import {getRelatedConcepts} from "@api/facets";
 import {getEnvironment} from "@util/environment";
+import ReGraph from "@components/common/re-graph/re-graph";
 
 interface Props extends RouteComponentProps<any> {
 }
 
 const Browse: React.FC<Props> = ({location}) => {
-  const componentIsMounted = useRef(true);
+  const componentIsMounted = useRef(false);
   const {
     user,
     handleError
@@ -77,7 +78,8 @@ const Browse: React.FC<Props> = ({location}) => {
   const [totalDocuments, setTotalDocuments] = useState(0);
   const [viewOptions, setViewOptions] = useState({
     graphView: userPreferences.graphView ? userPreferences.graphView : false,
-    tableView: userPreferences.tableView ? userPreferences.tableView : false
+    tableView: userPreferences.tableView ? userPreferences.tableView : false,
+    reGraphView: userPreferences.reGraphView ? userPreferences.reGraphView : false,
   });
   const [endScroll, setEndScroll] = useState(false);
   const [selectedFacets, setSelectedFacets] = useState<any[]>([]);
@@ -334,7 +336,7 @@ const Browse: React.FC<Props> = ({location}) => {
 
   const fetchConceptFacets = async () => {
     try {
-      const response =  await getRelatedConcepts(searchOptions.database);
+      const response = await getRelatedConcepts(searchOptions.database);
       if (response.status === 200) {
         setEntitiesWithRelatedConcepts(response.data);
       }
@@ -344,6 +346,7 @@ const Browse: React.FC<Props> = ({location}) => {
   };
 
   useEffect(() => {
+    componentIsMounted.current = true;
     initializeUserPreferences();
     fetchConceptFacets();
     return () => {
@@ -425,7 +428,7 @@ const Browse: React.FC<Props> = ({location}) => {
 
   useEffect(() => {
     let baseEntitiesSelected = searchOptions.entityTypeIds.length > 0;
-    if (isGraphView() && baseEntitiesSelected) {
+    if (isGraphView() && baseEntitiesSelected || viewOptions.reGraphView) {
       if (savedNode && !savedNode["navigatingFromOtherView"]) {
         setSavedNode(undefined);
       }
@@ -435,9 +438,9 @@ const Browse: React.FC<Props> = ({location}) => {
       setGraphLoading(true);
     }
     return () => {
-      setGraphSearchData({});
+      // setGraphSearchData({});
     };
-  }, [viewOptions.graphView, searchOptions.entityTypeIds, searchOptions.relatedEntityTypeIds, searchOptions.conceptFilterTypeIds, searchOptions.database, searchOptions.datasource, searchOptions.query, searchOptions.selectedFacets, user.error.type, hideDataHubArtifacts, hubCentralConfig]);
+  }, [viewOptions.reGraphView, viewOptions.graphView, searchOptions.entityTypeIds, searchOptions.relatedEntityTypeIds, searchOptions.conceptFilterTypeIds, searchOptions.database, searchOptions.datasource, searchOptions.query, searchOptions.selectedFacets, user.error.type, hideDataHubArtifacts, hubCentralConfig]);
 
   useEffect(() => {
     let state: any = location.state;
@@ -642,14 +645,17 @@ const Browse: React.FC<Props> = ({location}) => {
 
   const handleViewChange = (view) => {
     let tableView = "";
-    if (view === "graph") {
-      setViewOptions({graphView: true, tableView: false});
+    if (view === "regraph") {
+      setViewOptions({graphView: false, tableView: false, reGraphView: true});
+      tableView = "regraph";
+    } else if (view === "graph") {
+      setViewOptions({graphView: true, tableView: false, reGraphView: false});
       tableView = "graph";
     } else if (view === "snippet") {
-      setViewOptions({graphView: false, tableView: false});
+      setViewOptions({graphView: false, tableView: false, reGraphView: false});
       tableView = "snippet";
     } else {
-      setViewOptions({graphView: false, tableView: true});
+      setViewOptions({graphView: false, tableView: true, reGraphView: false});
       tableView = "table";
     }
     setUserPreferences(tableView);
@@ -818,7 +824,7 @@ const Browse: React.FC<Props> = ({location}) => {
                           <div className={styles.loadingContainer} aria-label={"spinner-message-container"}>
                             <div className={styles.spinnerContainer}><Spinner animation="border" data-testid="spinner" variant="primary" /></div>
                             <div className={styles.loadingMsg}>Graph Loading...</div>
-                            <br/>
+                            <br />
                             <div className={styles.loadingMsgSubtext}>(This process may take longer depending on the size of your data)</div>
                           </div>
                         }
@@ -835,29 +841,30 @@ const Browse: React.FC<Props> = ({location}) => {
                           />
                         </div>
                       </div> :
-                      (viewOptions.tableView ?
-                        <div className={styles.tableViewResult}>
-                          <ResultsTabularView
-                            data={data}
-                            entityPropertyDefinitions={entityPropertyDefinitions}
-                            selectedPropertyDefinitions={selectedPropertyDefinitions}
-                            entityDefArray={entityDefArray}
-                            columns={columns}
-                            selectedEntities={searchOptions.entityTypeIds}
-                            setColumnSelectorTouched={setColumnSelectorTouched}
-                            tableView={viewOptions.tableView}
-                            isLoading={isLoading}
+                      viewOptions.reGraphView ? <ReGraph data={graphSearchData} config={hubCentralConfig}/> :
+                        (viewOptions.tableView ?
+                          <div className={styles.tableViewResult}>
+                            <ResultsTabularView
+                              data={data}
+                              entityPropertyDefinitions={entityPropertyDefinitions}
+                              selectedPropertyDefinitions={selectedPropertyDefinitions}
+                              entityDefArray={entityDefArray}
+                              columns={columns}
+                              selectedEntities={searchOptions.entityTypeIds}
+                              setColumnSelectorTouched={setColumnSelectorTouched}
+                              tableView={viewOptions.tableView}
+                              isLoading={isLoading}
+                              handleViewChange={handleViewChange}
+                            />
+                          </div>
+                          : isLoading ? <></> : <div id="snippetViewResult" className={styles.snippetViewResult} ref={resultsRef} onScroll={onResultScroll}><SearchResults data={data}
                             handleViewChange={handleViewChange}
-                          />
-                        </div>
-                        : isLoading ? <></> : <div id="snippetViewResult" className={styles.snippetViewResult} ref={resultsRef} onScroll={onResultScroll}><SearchResults data={data}
-                          handleViewChange={handleViewChange}
-                          entityDefArray={entityDefArray} tableView={viewOptions.tableView} columns={columns} /></div>
-                      )}
+                            entityDefArray={entityDefArray} tableView={viewOptions.tableView} columns={columns} /></div>
+                        )}
                 </div>
                 <br />
               </div>}
-            {!showNoDefinitionAlertMessage && !isGraphView() &&
+            {!showNoDefinitionAlertMessage && !isGraphView() && !viewOptions.reGraphView  &&
               <div>
                 <SearchSummary
                   total={totalDocuments}

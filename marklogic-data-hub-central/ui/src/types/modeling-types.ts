@@ -17,7 +17,8 @@ export enum ViewType {
   table = "table",
   snippet = "snippet",
   card = "card",
-  list = "list"
+  list = "list",
+  regraph = "regraph",
 }
 
 
