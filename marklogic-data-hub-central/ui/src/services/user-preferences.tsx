@@ -25,6 +25,7 @@ export const defaultUserPreferences = {
   pageLength: 20,
   tableView: false,
   graphView: true,
+  reGraphView: true,
   // pageRoute: '/view',
   resultTableColumns: [],
   selectedQuery: "select a query",

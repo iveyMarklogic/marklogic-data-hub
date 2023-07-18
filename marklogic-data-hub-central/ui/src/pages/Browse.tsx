@@ -36,6 +36,7 @@ import {HubCentralConfigContext} from "@util/hubCentralConfig-context";
 import {baseEntitiesSorting} from "@util/entities-sorting";
 import {getRelatedConcepts} from "@api/facets";
 import {getEnvironment} from "@util/environment";
+import ReGraph from "@components/common/re-graph/re-graph";
 
 interface Props extends RouteComponentProps<any> {}
 
@@ -74,6 +75,7 @@ const Browse: React.FC<Props> = ({location}) => {
   const [viewOptions, setViewOptions] = useState({
     graphView: userPreferences.graphView ? userPreferences.graphView : false,
     tableView: userPreferences.tableView ? userPreferences.tableView : false,
+    reGraphView: userPreferences.reGraphView ? userPreferences.reGraphView : false,
   });
   const [endScroll, setEndScroll] = useState(false);
   const [selectedFacets, setSelectedFacets] = useState<any[]>([]);
@@ -455,7 +457,7 @@ const Browse: React.FC<Props> = ({location}) => {
 
   useEffect(() => {
     let baseEntitiesSelected = searchOptions.entityTypeIds.length > 0;
-    if (isGraphView() && baseEntitiesSelected) {
+    if (isGraphView() && baseEntitiesSelected || viewOptions.reGraphView) {
       if (savedNode && !savedNode["navigatingFromOtherView"]) {
         setSavedNode(undefined);
       }
@@ -468,6 +470,7 @@ const Browse: React.FC<Props> = ({location}) => {
       setGraphSearchData({});
     };
   }, [
+    viewOptions.reGraphView,
     viewOptions.graphView,
     searchOptions.entityTypeIds,
     searchOptions.relatedEntityTypeIds,
@@ -706,14 +709,17 @@ const Browse: React.FC<Props> = ({location}) => {
 
   const handleViewChange = view => {
     let tableView = "";
-    if (view === "graph") {
-      setViewOptions({graphView: true, tableView: false});
+    if (view === "regraph") {
+      setViewOptions({graphView: false, tableView: false, reGraphView: true});
+      tableView = "regraph";
+    } else if (view === "graph") {
+      setViewOptions({graphView: true, tableView: false, reGraphView: false});
       tableView = "graph";
     } else if (view === "snippet") {
-      setViewOptions({graphView: false, tableView: false});
+      setViewOptions({graphView: false, tableView: false, reGraphView: false});
       tableView = "snippet";
     } else {
-      setViewOptions({graphView: false, tableView: true});
+      setViewOptions({graphView: false, tableView: true, reGraphView: false});
       tableView = "table";
     }
     setUserPreferences(tableView);
@@ -947,44 +953,47 @@ const Browse: React.FC<Props> = ({location}) => {
                         />
                       </div>
                     </div>
-                  ) : viewOptions.tableView ? (
-                    <div className={styles.tableViewResult}>
-                      <ResultsTabularView
-                        data={data}
-                        entityPropertyDefinitions={entityPropertyDefinitions}
-                        selectedPropertyDefinitions={selectedPropertyDefinitions}
-                        entityDefArray={entityDefArray}
-                        columns={columns}
-                        selectedEntities={searchOptions.entityTypeIds}
-                        setColumnSelectorTouched={setColumnSelectorTouched}
-                        tableView={viewOptions.tableView}
-                        isLoading={isLoading}
-                        handleViewChange={handleViewChange}
-                      />
-                    </div>
-                  ) : isLoading ? (
-                    <></>
-                  ) : (
-                    <div
-                      id="snippetViewResult"
-                      className={styles.snippetViewResult}
-                      ref={resultsRef}
-                      onScroll={onResultScroll}
-                    >
-                      <SearchResults
-                        data={data}
-                        handleViewChange={handleViewChange}
-                        entityDefArray={entityDefArray}
-                        tableView={viewOptions.tableView}
-                        columns={columns}
-                      />
-                    </div>
-                  )}
+                  ) :
+                    viewOptions.reGraphView ? <ReGraph data={graphSearchData} config={hubCentralConfig}/> :
+                      viewOptions.tableView ? (
+                        <div className={styles.tableViewResult}>
+                          <ResultsTabularView
+                            data={data}
+                            entityPropertyDefinitions={entityPropertyDefinitions}
+                            selectedPropertyDefinitions={selectedPropertyDefinitions}
+                            entityDefArray={entityDefArray}
+                            columns={columns}
+                            selectedEntities={searchOptions.entityTypeIds}
+                            setColumnSelectorTouched={setColumnSelectorTouched}
+                            tableView={viewOptions.tableView}
+                            isLoading={isLoading}
+                            handleViewChange={handleViewChange}
+                          />
+                        </div>
+                      ) : isLoading ? (
+                        <></>
+                      ) : (
+                        <div
+                          id="snippetViewResult"
+                          className={styles.snippetViewResult}
+                          ref={resultsRef}
+                          onScroll={onResultScroll}
+                        >
+                          <SearchResults
+                            data={data}
+                            handleViewChange={handleViewChange}
+                            entityDefArray={entityDefArray}
+                            tableView={viewOptions.tableView}
+                            columns={columns}
+                          />
+                        </div>
+                      )
+                  }
                 </div>
                 <br />
               </div>
             )}
-            {!showNoDefinitionAlertMessage && !isGraphView() && (
+            {!showNoDefinitionAlertMessage && !isGraphView() && !viewOptions.reGraphView && (
               <div>
                 <SearchSummary
                   total={totalDocuments}

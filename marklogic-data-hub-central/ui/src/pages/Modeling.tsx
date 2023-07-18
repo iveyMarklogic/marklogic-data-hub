@@ -38,6 +38,7 @@ import {HubCentralConfigContext} from "@util/hubCentralConfig-context";
 import ConceptClassModal from "@components/modeling/concept-class-modal/concept-class-modal";
 import {Dropdown, DropdownButton} from "react-bootstrap";
 import {ChevronDown} from "react-bootstrap-icons";
+import ModelingReGraph from "@components/common/re-graph/re-graph-modeling";
 
 const Modeling: React.FC = () => {
   const {user, handleError} = useContext(UserContext);
@@ -512,9 +513,11 @@ const Modeling: React.FC = () => {
     </span>
   );
 
-  const handleViewChange = view => {
+  const handleViewChange = (view) => {
     if (view === "table") {
       setView(ViewType.table);
+    } else if (view === "regraph") {
+      setView(ViewType.regraph);
     } else {
       setView(defaultModelingView);
     }
@@ -616,30 +619,33 @@ const Modeling: React.FC = () => {
             )}
             <h1>Data Model</h1>
             <div className={styles.borderBelowHeader} />
-            <GraphView
-              canReadEntityModel={canReadEntityModel}
-              canWriteEntityModel={canWriteEntityModel}
-              dataModel={dataModel}
-              deleteEntityType={getEntityReferences}
-              updateSavedEntity={saveAllEntitiesToServer}
-              updateEntities={setDataModelFromServer}
-              relationshipModalVisible={showRelationshipModal}
-              toggleRelationshipModal={toggleRelationshipModal}
-              toggleShowEntityModal={toggleShowEntityModal}
-              toggleIsEditModal={toggleIsEditModal}
-              setDataModelFromServer={setDataModelFromServer}
-              toggleConfirmModal={toggleConfirmModal}
-              toggleRevertConfirmModal={toggleRevertConfirmModal}
-              setConfirmType={setConfirmType}
-              hubCentralConfig={hubCentralConfig}
-              updateHubCentralConfig={publishHubCentralConfig}
-              revertUnpublishedChanges={revertUnpublishedChanges}
-              setRevertUnpublishedChanges={setRevertUnpublishedChanges}
-              toggleShowConceptClassModal={toggleShowConceptClassModal}
-              toggleIsEditConceptClassModal={toggleIsEditConceptClassModal}
-              updateConceptClassAndHideModal={updateConceptClassAndHideModal}
-              deleteConceptClass={getConceptClassReferences}
-            />
+            {modelingOptions.view === ViewType.regraph ?
+              <ModelingReGraph data={dataModel} config={hubCentralConfig}/>
+              :
+              <GraphView
+                canReadEntityModel={canReadEntityModel}
+                canWriteEntityModel={canWriteEntityModel}
+                dataModel={dataModel}
+                deleteEntityType={getEntityReferences}
+                updateSavedEntity={saveAllEntitiesToServer}
+                updateEntities={setDataModelFromServer}
+                relationshipModalVisible={showRelationshipModal}
+                toggleRelationshipModal={toggleRelationshipModal}
+                toggleShowEntityModal={toggleShowEntityModal}
+                toggleIsEditModal={toggleIsEditModal}
+                setDataModelFromServer={setDataModelFromServer}
+                toggleConfirmModal={toggleConfirmModal}
+                toggleRevertConfirmModal={toggleRevertConfirmModal}
+                setConfirmType={setConfirmType}
+                hubCentralConfig={hubCentralConfig}
+                updateHubCentralConfig={publishHubCentralConfig}
+                revertUnpublishedChanges={revertUnpublishedChanges}
+                setRevertUnpublishedChanges={setRevertUnpublishedChanges}
+                toggleShowConceptClassModal={toggleShowConceptClassModal}
+                toggleIsEditConceptClassModal={toggleIsEditConceptClassModal}
+                updateConceptClassAndHideModal={updateConceptClassAndHideModal}
+                deleteConceptClass={getConceptClassReferences}
+              />}
           </>
         )}
         {modelingOptions.view === ViewType.table ? (

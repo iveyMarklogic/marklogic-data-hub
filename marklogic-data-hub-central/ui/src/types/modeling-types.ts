@@ -18,6 +18,7 @@ export enum ViewType {
   snippet = "snippet",
   card = "card",
   list = "list",
+  regraph = "regraph",
 }
 
 export interface ModelingOptionsInterface {

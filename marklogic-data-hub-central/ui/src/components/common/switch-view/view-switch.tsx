@@ -76,6 +76,24 @@ const ViewSwitch: FC<Props> = ({handleViewChange, selectedView, snippetView, loa
         </div>
       ) : (
         <div className={"switch-button-group outline"}>
+          <span>
+            <input
+              type="radio"
+              id="switch-view-regraph"
+              name="switch-view-radiogroup"
+              key={"regraph-view"}
+              value={"regraph"}
+              checked={selectedView === ViewType.regraph}
+              onChange={e => handleViewChange(e.target.value)}
+            />
+            <HCTooltip text="ReGraph View" id="graph-view-tooltip" placement="top">
+              <label aria-label="switch-view-regraph" htmlFor="switch-view-regraph" className={`${className} ${styles.leftButton}`} id={"reGraphView"} style={style}>
+                <i data-cy="graph-view">
+                  <FontAwesomeIcon icon={faProjectDiagram} size={"2x"} />
+                </i>
+              </label>
+            </HCTooltip>
+          </span>
           <span
             tabIndex={0}
             onKeyDown={event => {
